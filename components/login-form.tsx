@@ -2,20 +2,26 @@
 
 import * as React from "react"
 import Image from "next/image"
-import {
-  AsYouType,
-  isValidPhoneNumber,
-  type CountryCode,
-} from "libphonenumber-js"
-import { ArrowLeft, Phone } from "@/components/icons"
+import { Controller, useForm, useWatch } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { AsYouType, type CountryCode } from "libphonenumber-js"
 
+import { ArrowLeft, Phone } from "@/components/icons"
 import { cn } from "@/lib/utils"
+import { t } from "@/lib/messages"
+import {
+  loginOtpSchema,
+  loginPhoneSchema,
+  type LoginOtpFormValues,
+  type LoginPhoneFormValues,
+} from "@/lib/validations"
 import { CountrySelect, getCountry } from "@/components/country-select"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
@@ -34,19 +40,38 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [step, setStep] = React.useState<Step>("phone")
-  const [countryCode, setCountryCode] = React.useState<CountryCode>("IN")
-  const [phone, setPhone] = React.useState("")
-  const [otp, setOtp] = React.useState("")
+  const [submitted, setSubmitted] = React.useState<{
+    countryCode: CountryCode
+    phone: string
+  } | null>(null)
   const [resendIn, setResendIn] = React.useState(0)
+  const [otpError, setOtpError] = React.useState<string | null>(null)
 
+  const phoneForm = useForm<LoginPhoneFormValues>({
+    resolver: zodResolver(loginPhoneSchema),
+    defaultValues: { countryCode: "IN", phone: "" },
+    mode: "onTouched",
+  })
+
+  const otpForm = useForm<LoginOtpFormValues>({
+    resolver: zodResolver(loginOtpSchema),
+    defaultValues: { otp: "" },
+    mode: "onSubmit",
+  })
+
+  const countryCode = useWatch({
+    control: phoneForm.control,
+    name: "countryCode",
+  }) as CountryCode
+  const phoneDigits = useWatch({
+    control: phoneForm.control,
+    name: "phone",
+  })
+  const otpValue = useWatch({ control: otpForm.control, name: "otp" })
   const country = getCountry(countryCode)
-
-  const formattedPhone = React.useMemo(() => {
-    if (!phone) return ""
-    return new AsYouType(country.code).input(phone)
-  }, [phone, country.code])
-
-  const isPhoneValid = isValidPhoneNumber(phone, country.code)
+  const formattedPhone = phoneDigits
+    ? new AsYouType(country.code).input(phoneDigits)
+    : ""
 
   React.useEffect(() => {
     if (resendIn <= 0) return
@@ -54,30 +79,53 @@ export function LoginForm({
     return () => clearInterval(id)
   }, [resendIn])
 
-  function startResendTimer() {
+  async function onSendOtp(values: LoginPhoneFormValues) {
+    await new Promise((r) => setTimeout(r, 600))
+    setSubmitted({
+      countryCode: values.countryCode as CountryCode,
+      phone: values.phone,
+    })
     setResendIn(30)
-  }
-
-  function handleSendOtp(e: React.SyntheticEvent<HTMLFormElement>) {
-    e.preventDefault()
-    if (!isPhoneValid) return
+    setOtpError(null)
+    otpForm.reset({ otp: "" })
     setStep("otp")
-    setOtp("")
-    startResendTimer()
   }
 
-  function handleVerifyOtp(e: React.SyntheticEvent<HTMLFormElement>) {
-    e.preventDefault()
-    if (otp.length < 6) return
-    // TODO: verify OTP with backend
+  async function onVerifyOtp(values: LoginOtpFormValues) {
+    await new Promise((r) => setTimeout(r, 600))
+    if (values.otp !== "123456") {
+      setOtpError(t("OTP_INCORRECT"))
+      otpForm.setError("otp", { message: t("OTP_INVALID") })
+      return
+    }
+    setOtpError(null)
+    // TODO: hand off authenticated session
   }
+
+  async function handleResend() {
+    if (resendIn > 0 || !submitted) return
+    await new Promise((r) => setTimeout(r, 400))
+    setResendIn(30)
+    setOtpError(null)
+    otpForm.reset({ otp: "" })
+  }
+
+  const submittedCountry = submitted ? getCountry(submitted.countryCode) : null
+  const submittedFormatted =
+    submitted && submittedCountry
+      ? new AsYouType(submittedCountry.code).input(submitted.phone)
+      : ""
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
           {step === "phone" ? (
-            <form className="p-6 md:p-8" onSubmit={handleSendOtp}>
+            <form
+              className="p-6 md:p-8"
+              onSubmit={phoneForm.handleSubmit(onSendOtp)}
+              noValidate
+            >
               <FieldGroup>
                 <div className="flex flex-col items-center gap-2 text-center">
                   <h1 className="text-2xl font-bold">Welcome back</h1>
@@ -85,43 +133,82 @@ export function LoginForm({
                     Log in to your Zo World account with your mobile number
                   </p>
                 </div>
-                <Field>
+                <Field
+                  data-invalid={
+                    phoneForm.formState.errors.phone ? true : undefined
+                  }
+                >
                   <FieldLabel htmlFor="phone">Mobile number</FieldLabel>
-                  <div className="flex h-9 items-stretch rounded-3xl border border-transparent bg-input/50 transition-[color,box-shadow,background-color] focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/30">
-                    <CountrySelect
-                      value={countryCode}
-                      onChange={(code) => {
-                        setCountryCode(code)
-                        setPhone("")
-                      }}
+                  <div
+                    className={cn(
+                      "flex h-9 items-stretch rounded-3xl border border-transparent bg-input/50 transition-[color,box-shadow,background-color] focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/30",
+                      phoneForm.formState.errors.phone &&
+                        "border-destructive ring-3 ring-destructive/20"
+                    )}
+                  >
+                    <Controller
+                      control={phoneForm.control}
+                      name="countryCode"
+                      render={({ field }) => (
+                        <CountrySelect
+                          value={field.value as CountryCode}
+                          onChange={(code) => {
+                            field.onChange(code)
+                            phoneForm.setValue("phone", "", {
+                              shouldValidate: false,
+                            })
+                          }}
+                        />
+                      )}
                     />
                     <div
                       aria-hidden="true"
                       className="my-1.5 w-px bg-border/60"
                     />
-                    <input
-                      id="phone"
-                      type="tel"
-                      inputMode="numeric"
-                      autoComplete="tel-national"
-                      placeholder="Phone number"
-                      value={formattedPhone}
-                      onChange={(e) =>
-                        setPhone(e.target.value.replace(/[^\d]/g, ""))
-                      }
-                      maxLength={20}
-                      required
-                      className="min-w-0 flex-1 bg-transparent px-3 text-base outline-none placeholder:text-muted-foreground md:text-sm"
+                    <Controller
+                      control={phoneForm.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <input
+                          id="phone"
+                          type="tel"
+                          inputMode="numeric"
+                          autoComplete="tel-national"
+                          placeholder="Phone number"
+                          value={formattedPhone}
+                          onChange={(e) =>
+                            field.onChange(e.target.value.replace(/[^\d]/g, ""))
+                          }
+                          onBlur={field.onBlur}
+                          maxLength={20}
+                          className="min-w-0 flex-1 bg-transparent px-3 text-base outline-none placeholder:text-muted-foreground md:text-sm"
+                        />
+                      )}
                     />
                   </div>
-                  <FieldDescription>
-                    We&apos;ll send a 6-digit code to verify it&apos;s you.
-                  </FieldDescription>
+                  {phoneForm.formState.errors.phone ? (
+                    <FieldError
+                      errors={[
+                        {
+                          message: phoneForm.formState.errors.phone.message,
+                        },
+                      ]}
+                    />
+                  ) : (
+                    <FieldDescription>
+                      We&apos;ll send a 6-digit code to verify it&apos;s you.
+                    </FieldDescription>
+                  )}
                 </Field>
                 <Field>
-                  <Button type="submit" disabled={!isPhoneValid}>
+                  <Button
+                    type="submit"
+                    disabled={phoneForm.formState.isSubmitting}
+                  >
                     <Phone />
-                    Send OTP
+                    {phoneForm.formState.isSubmitting
+                      ? "Sending…"
+                      : "Send OTP"}
                   </Button>
                 </Field>
                 <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
@@ -162,46 +249,76 @@ export function LoginForm({
               </FieldGroup>
             </form>
           ) : (
-            <form className="p-6 md:p-8" onSubmit={handleVerifyOtp}>
+            <form
+              className="p-6 md:p-8"
+              onSubmit={otpForm.handleSubmit(onVerifyOtp)}
+              noValidate
+            >
               <FieldGroup>
                 <div className="flex flex-col items-center gap-2 text-center">
                   <h1 className="text-2xl font-bold">Enter the code</h1>
                   <p className="text-balance text-muted-foreground">
                     We sent a 6-digit code to{" "}
                     <span className="font-medium text-foreground">
-                      {country.dial} {formattedPhone}
+                      {submittedCountry?.dial} {submittedFormatted}
                     </span>
                   </p>
                 </div>
-                <Field>
+                <Field
+                  data-invalid={
+                    otpForm.formState.errors.otp ? true : undefined
+                  }
+                >
                   <FieldLabel htmlFor="otp" className="sr-only">
                     One-time code
                   </FieldLabel>
-                  <div className="flex justify-center">
-                    <InputOTP
-                      id="otp"
-                      maxLength={6}
-                      value={otp}
-                      onChange={setOtp}
-                      autoFocus
-                    >
-                      <InputOTPGroup>
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                      </InputOTPGroup>
-                      <InputOTPSeparator />
-                      <InputOTPGroup>
-                        <InputOTPSlot index={3} />
-                        <InputOTPSlot index={4} />
-                        <InputOTPSlot index={5} />
-                      </InputOTPGroup>
-                    </InputOTP>
-                  </div>
+                  <Controller
+                    control={otpForm.control}
+                    name="otp"
+                    render={({ field }) => (
+                      <div className="flex justify-center">
+                        <InputOTP
+                          id="otp"
+                          maxLength={6}
+                          value={field.value}
+                          onChange={(v) => {
+                            field.onChange(v)
+                            if (otpError) setOtpError(null)
+                          }}
+                          autoFocus
+                        >
+                          <InputOTPGroup>
+                            <InputOTPSlot index={0} />
+                            <InputOTPSlot index={1} />
+                            <InputOTPSlot index={2} />
+                          </InputOTPGroup>
+                          <InputOTPSeparator />
+                          <InputOTPGroup>
+                            <InputOTPSlot index={3} />
+                            <InputOTPSlot index={4} />
+                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                        </InputOTP>
+                      </div>
+                    )}
+                  />
+                  {otpForm.formState.errors.otp || otpError ? (
+                    <FieldError className="text-center">
+                      {otpError ?? otpForm.formState.errors.otp?.message}
+                    </FieldError>
+                  ) : null}
                 </Field>
                 <Field>
-                  <Button type="submit" disabled={otp.length < 6}>
-                    Verify & continue
+                  <Button
+                    type="submit"
+                    disabled={
+                      otpForm.formState.isSubmitting ||
+                      (otpValue?.length ?? 0) < 6
+                    }
+                  >
+                    {otpForm.formState.isSubmitting
+                      ? "Verifying…"
+                      : "Verify & continue"}
                   </Button>
                 </Field>
                 <FieldDescription className="text-center">
@@ -211,7 +328,7 @@ export function LoginForm({
                     <button
                       type="button"
                       className="underline underline-offset-2 hover:text-foreground"
-                      onClick={startResendTimer}
+                      onClick={handleResend}
                     >
                       Resend code
                     </button>
