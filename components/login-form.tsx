@@ -2,9 +2,15 @@
 
 import * as React from "react"
 import Image from "next/image"
+import {
+  AsYouType,
+  isValidPhoneNumber,
+  type CountryCode,
+} from "libphonenumber-js"
 import { ArrowLeft, Phone } from "@/components/icons"
 
 import { cn } from "@/lib/utils"
+import { CountrySelect, getCountry } from "@/components/country-select"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -14,7 +20,6 @@ import {
   FieldLabel,
   FieldSeparator,
 } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
 import {
   InputOTP,
   InputOTPGroup,
@@ -29,9 +34,19 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [step, setStep] = React.useState<Step>("phone")
+  const [countryCode, setCountryCode] = React.useState<CountryCode>("IN")
   const [phone, setPhone] = React.useState("")
   const [otp, setOtp] = React.useState("")
   const [resendIn, setResendIn] = React.useState(0)
+
+  const country = getCountry(countryCode)
+
+  const formattedPhone = React.useMemo(() => {
+    if (!phone) return ""
+    return new AsYouType(country.code).input(phone)
+  }, [phone, country.code])
+
+  const isPhoneValid = isValidPhoneNumber(phone, country.code)
 
   React.useEffect(() => {
     if (resendIn <= 0) return
@@ -45,7 +60,7 @@ export function LoginForm({
 
   function handleSendOtp(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (phone.replace(/\D/g, "").length < 10) return
+    if (!isPhoneValid) return
     setStep("otp")
     setOtp("")
     startResendTimer()
@@ -72,23 +87,31 @@ export function LoginForm({
                 </div>
                 <Field>
                   <FieldLabel htmlFor="phone">Mobile number</FieldLabel>
-                  <div className="flex items-stretch gap-2">
-                    <div className="inline-flex items-center rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
-                      +91
-                    </div>
-                    <Input
+                  <div className="flex h-9 items-stretch rounded-3xl border border-transparent bg-input/50 transition-[color,box-shadow,background-color] focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/30">
+                    <CountrySelect
+                      value={countryCode}
+                      onChange={(code) => {
+                        setCountryCode(code)
+                        setPhone("")
+                      }}
+                    />
+                    <div
+                      aria-hidden="true"
+                      className="my-1.5 w-px bg-border/60"
+                    />
+                    <input
                       id="phone"
                       type="tel"
                       inputMode="numeric"
-                      autoComplete="tel"
-                      placeholder="98765 43210"
-                      value={phone}
+                      autoComplete="tel-national"
+                      placeholder="Phone number"
+                      value={formattedPhone}
                       onChange={(e) =>
-                        setPhone(e.target.value.replace(/[^\d\s]/g, ""))
+                        setPhone(e.target.value.replace(/[^\d]/g, ""))
                       }
-                      maxLength={12}
+                      maxLength={20}
                       required
-                      className="flex-1"
+                      className="min-w-0 flex-1 bg-transparent px-3 text-base outline-none placeholder:text-muted-foreground md:text-sm"
                     />
                   </div>
                   <FieldDescription>
@@ -96,10 +119,7 @@ export function LoginForm({
                   </FieldDescription>
                 </Field>
                 <Field>
-                  <Button
-                    type="submit"
-                    disabled={phone.replace(/\D/g, "").length < 10}
-                  >
+                  <Button type="submit" disabled={!isPhoneValid}>
                     <Phone />
                     Send OTP
                   </Button>
@@ -149,7 +169,7 @@ export function LoginForm({
                   <p className="text-balance text-muted-foreground">
                     We sent a 6-digit code to{" "}
                     <span className="font-medium text-foreground">
-                      +91 {phone}
+                      {country.dial} {formattedPhone}
                     </span>
                   </p>
                 </div>
