@@ -5,8 +5,10 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: var(--font-sans);
-    --font-sans: var(--font-sans);
+    --font-heading: var(--font-display);
+    --font-sans: var(--font-body);
+    --font-serif: var(--font-accent);
+
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -38,6 +40,7 @@
     --color-card: var(--card);
     --color-foreground: var(--foreground);
     --color-background: var(--background);
+
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -47,83 +50,293 @@
     --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* =========================================================
+   ZOSTEL DESIGN SYSTEM — colors + type
+   Tagline: LIVE IT. NOW.
+   ========================================================= */
 :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+    /* ---- Primary palette ---- */
+    --zo-orange:        #f15824;
+    --zo-grey:          #2b2b2a;
+    --zo-white:         #ffffff;
+    --zo-beige:         #f0edde;
+
+    /* ---- Secondary palettes ---- */
+    --zo-sunny-1:       #ffaa00;
+    --zo-sunny-2:       #ff5500;
+    --zo-sunny-3:       #fff000;
+    --zo-water-1:       #99ddff;
+    --zo-water-2:       #33cccc;
+    --zo-water-3:       #0066cc;
+    --zo-field-1:       #ccff00;
+    --zo-field-2:       #00aa77;
+    --zo-field-3:       #99dd00;
+    --zo-flower-1:      #ff0066;
+    --zo-flower-2:      #ffcc77;
+    --zo-flower-3:      #ff1199;
+    --zo-valley-1:      #9955cc;
+    --zo-valley-2:      #6688cc;
+    --zo-valley-3:      #ff99cc;
+
+    /* ---- Semantic tokens — light ---- */
+    --fg-1:             var(--zo-grey);
+    --fg-2:             #56544f;
+    --fg-3:             #8a857c;
+    --fg-inverse:       var(--zo-white);
+    --fg-accent:        var(--zo-orange);
+
+    --bg-1:             var(--zo-white);
+    --bg-2:             var(--zo-beige);
+    --bg-3:             #faf8ef;
+    --bg-inverse:       var(--zo-grey);
+    --bg-accent:        var(--zo-orange);
+
+    --border-1:         rgba(43, 43, 42, 0.12);
+    --border-2:         rgba(43, 43, 42, 0.24);
+    --border-accent:    var(--zo-orange);
+
+    /* ---- Gradients ---- */
+    --grad-sunset:      linear-gradient(135deg, #ffaa00, #f15824, #ff0066);
+    --grad-ocean:       linear-gradient(135deg, #99ddff, #33cccc, #0066cc);
+    --grad-forest:      linear-gradient(135deg, #ccff00, #00aa77, #99dd00);
+    --grad-brand:       linear-gradient(135deg, #f15824, #ff0066);
+
+    /* ---- Typography families (resolved via next/font CSS variables) ---- */
+    --font-display:     var(--font-jost), 'Futura', 'Trebuchet MS', Arial, sans-serif;
+    --font-body:        var(--font-jost), 'Futura', 'Trebuchet MS', Arial, sans-serif;
+    --font-alt:         var(--font-archivo), 'Gotham Narrow', Verdana, sans-serif;
+    --font-accent:      var(--font-caslon), 'Mrs Eaves', Georgia, serif;
+
+    /* ---- Type scale ---- */
+    --fs-display:       clamp(48px, 6vw, 72px);
+    --fs-h1:            clamp(36px, 4vw, 48px);
+    --fs-h2:            clamp(28px, 3vw, 36px);
+    --fs-h3:            20px;
+    --fs-body:          16px;
+    --fs-small:         14px;
+    --fs-caption:       12px;
+    --lh-display:       1.05;
+    --lh-heading:       1.15;
+    --lh-body:          1.55;
+    --tracking-display: 0.02em;
+    --tracking-caps:    0.1em;
+    --tracking-wordmark: 0.3em;
+
+    /* ---- Radii / spacing / elevation ---- */
+    --radius:           0.625rem;
+    --radius-pill:      999px;
+    --space-1:          4px;
+    --space-2:          8px;
+    --space-3:          12px;
+    --space-4:          16px;
+    --space-5:          24px;
+    --space-6:          32px;
+    --space-8:          48px;
+    --space-10:         64px;
+    --space-12:         96px;
+
+    --shadow-1:         0 1px 2px rgba(43, 43, 42, .06), 0 1px 1px rgba(43, 43, 42, .04);
+    --shadow-2:         0 4px 12px rgba(43, 43, 42, .08);
+    --shadow-3:         0 10px 25px -5px rgba(43, 43, 42, .15);
+    --shadow-glow:      0 0 20px rgba(241, 88, 36, .30);
+
+    /* ---- Motion ---- */
+    --ease-out:         cubic-bezier(.2, 0, .4, 1);
+    --ease-inout:       cubic-bezier(.4, 0, .6, 1);
+    --ease-bounce:      cubic-bezier(.2, 1.5, .4, 1);
+    --dur-fast:         150ms;
+    --dur-base:         300ms;
+    --dur-slow:         500ms;
+
+    /* ---- shadcn semantic tokens — light (mapped to Zostel) ---- */
+    --background:           var(--bg-1);
+    --foreground:           var(--fg-1);
+    --card:                 var(--bg-1);
+    --card-foreground:      var(--fg-1);
+    --popover:              var(--bg-1);
+    --popover-foreground:   var(--fg-1);
+    --primary:              var(--zo-orange);
+    --primary-foreground:   var(--zo-white);
+    --secondary:            var(--zo-beige);
+    --secondary-foreground: var(--zo-grey);
+    --muted:                var(--bg-2);
+    --muted-foreground:     var(--fg-2);
+    --accent:               var(--bg-3);
+    --accent-foreground:    var(--fg-1);
+    --destructive:          #d93025;
+    --border:               var(--border-1);
+    --input:                var(--border-1);
+    --ring:                 var(--zo-orange);
+    --chart-1:              var(--zo-orange);
+    --chart-2:              var(--zo-sunny-1);
+    --chart-3:              var(--zo-water-2);
+    --chart-4:              var(--zo-field-2);
+    --chart-5:              var(--zo-valley-1);
+    --sidebar:              var(--bg-2);
+    --sidebar-foreground:   var(--fg-1);
+    --sidebar-primary:      var(--zo-orange);
+    --sidebar-primary-foreground: var(--zo-white);
+    --sidebar-accent:       var(--bg-3);
+    --sidebar-accent-foreground: var(--fg-1);
+    --sidebar-border:       var(--border-1);
+    --sidebar-ring:         var(--zo-orange);
 }
 
+/* =========================================================
+   DARK THEME — applied via .dark class on <html> (next-themes).
+   Brand integrity: no pure #000. Steel Grey deepens to warm "Ink".
+   Orange brightens slightly for contrast on dark grounds.
+   ========================================================= */
 .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
+    /* ---- Dark raw palette ---- */
+    --zo-ink:           #161514;
+    --zo-coal:          #1f1d1c;
+    --zo-soot:          #2b2825;
+    --zo-smoke:         #3a3633;
+    --zo-fog:           #5a5450;
+    --zo-bone:          #e8e3d6;
+    --zo-orange-lit:    #ff6a35;
+
+    /* ---- Semantic tokens — dark ---- */
+    --fg-1:             var(--zo-bone);
+    --fg-2:             #b8b1a4;
+    --fg-3:             #8c8579;
+    --fg-inverse:       var(--zo-ink);
+    --fg-accent:        var(--zo-orange-lit);
+
+    --bg-1:             var(--zo-ink);
+    --bg-2:             var(--zo-coal);
+    --bg-3:             var(--zo-soot);
+    --bg-inverse:       var(--zo-bone);
+    --bg-accent:        var(--zo-orange-lit);
+
+    --border-1:         rgba(232, 227, 214, 0.10);
+    --border-2:         rgba(232, 227, 214, 0.18);
+    --border-accent:    var(--zo-orange-lit);
+
+    --shadow-1:         0 1px 2px rgba(0, 0, 0, .40), 0 1px 1px rgba(0, 0, 0, .30);
+    --shadow-2:         0 4px 14px rgba(0, 0, 0, .45);
+    --shadow-3:         0 12px 28px -6px rgba(0, 0, 0, .55);
+    --shadow-glow:      0 0 24px rgba(255, 106, 53, .42);
+
+    --grad-sunset:      linear-gradient(135deg, #ff8a1f, #ff6a35, #ff3a7a);
+    --grad-ocean:       linear-gradient(135deg, #4ec5ff, #2da9b2, #1b5fc0);
+    --grad-forest:      linear-gradient(135deg, #b8ed3a, #1aa67f, #84c93a);
+    --grad-brand:       linear-gradient(135deg, #ff6a35, #ff3a7a);
+
+    /* ---- shadcn semantic tokens — dark ---- */
+    --background:           var(--bg-1);
+    --foreground:           var(--fg-1);
+    --card:                 var(--bg-2);
+    --card-foreground:      var(--fg-1);
+    --popover:              var(--bg-2);
+    --popover-foreground:   var(--fg-1);
+    --primary:              var(--zo-orange-lit);
+    --primary-foreground:   var(--zo-ink);
+    --secondary:            var(--zo-soot);
+    --secondary-foreground: var(--zo-bone);
+    --muted:                var(--zo-coal);
+    --muted-foreground:     var(--fg-2);
+    --accent:               var(--zo-smoke);
+    --accent-foreground:    var(--zo-bone);
+    --destructive:          #ff5a4d;
+    --border:               var(--border-1);
+    --input:                var(--border-2);
+    --ring:                 var(--zo-orange-lit);
+    --chart-1:              var(--zo-orange-lit);
+    --chart-2:              var(--zo-sunny-1);
+    --chart-3:              var(--zo-water-2);
+    --chart-4:              var(--zo-field-2);
+    --chart-5:              var(--zo-valley-1);
+    --sidebar:              var(--zo-coal);
+    --sidebar-foreground:   var(--zo-bone);
+    --sidebar-primary:      var(--zo-orange-lit);
+    --sidebar-primary-foreground: var(--zo-ink);
+    --sidebar-accent:       var(--zo-soot);
+    --sidebar-accent-foreground: var(--zo-bone);
+    --sidebar-border:       var(--border-1);
+    --sidebar-ring:         var(--zo-orange-lit);
 }
 
+/* ---------- Base ---------- */
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+    * {
+        @apply border-border outline-ring/50;
     }
-  body {
-    @apply bg-background text-foreground;
+    html {
+        @apply font-sans;
+        scroll-behavior: smooth;
     }
-  html {
-    @apply font-sans;
+    body {
+        @apply bg-background text-foreground;
+        font-family: var(--font-body);
+        font-size: var(--fs-body);
+        line-height: var(--lh-body);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
+    button:not(:disabled), [role="button"]:not(:disabled) {
+        cursor: pointer;
+    }
+}
+
+/* ---------- Semantic type ---------- */
+.display, h1.display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: var(--fs-display);
+    line-height: var(--lh-display);
+    letter-spacing: var(--tracking-display);
+    text-transform: uppercase;
+}
+.eyebrow {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-small);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: var(--fg-accent);
+}
+.wordmark {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: var(--tracking-wordmark);
+    text-transform: uppercase;
+}
+.serif-accent {
+    font-family: var(--font-accent);
+    font-style: italic;
+}
+
+/* ---------- Brand utilities ---------- */
+.tagline-band {
+    background: var(--zo-grey);
+    color: var(--zo-white);
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    padding: .75rem 1rem;
+    text-align: center;
+}
+.theme-stack {
+    font-family: var(--font-display);
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1.05;
+    display: flex;
+    flex-direction: column;
+}
+.theme-stack > *:nth-child(1) { opacity: 1; }
+.theme-stack > *:nth-child(2) { opacity: .7; }
+.theme-stack > *:nth-child(3) { opacity: .85; }
+.theme-stack > *:nth-child(4) { opacity: .55; }
+
+::selection {
+    background: var(--zo-orange);
+    color: var(--zo-white);
+}
+.dark ::selection {
+    background: var(--zo-orange-lit);
+    color: var(--zo-ink);
 }
