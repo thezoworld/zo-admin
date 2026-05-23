@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import { ArrowLeft, Phone } from "@/components/icons"
 
 import { cn } from "@/lib/utils"
@@ -210,10 +211,12 @@ export function LoginForm({
             </form>
           )}
           <div className="relative hidden bg-muted md:block">
-            <img
+            <Image
               src="https://proxy.cdn.zo.xyz/gallery/media/images/a2d7b00a-3742-4f90-a844-a80606d65fab_20260523100537.webp"
               alt="Image"
-              className="absolute inset-0 h-full w-full object-cover"
+              fill
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className="object-cover"
             />
           </div>
         </CardContent>
