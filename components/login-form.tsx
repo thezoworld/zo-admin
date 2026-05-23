@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { ArrowLeft, Phone } from "@/components/icons"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -98,6 +99,7 @@ export function LoginForm({
                     type="submit"
                     disabled={phone.replace(/\D/g, "").length < 10}
                   >
+                    <Phone />
                     Send OTP
                   </Button>
                 </Field>
@@ -133,6 +135,9 @@ export function LoginForm({
                     <span className="sr-only">Login with Meta</span>
                   </Button>
                 </Field>
+                <FieldDescription className="text-center">
+                  Follow Your ❤️
+                </FieldDescription>
               </FieldGroup>
             </form>
           ) : (
@@ -197,6 +202,7 @@ export function LoginForm({
                     variant="ghost"
                     onClick={() => setStep("phone")}
                   >
+                    <ArrowLeft />
                     Change mobile number
                   </Button>
                 </Field>
@@ -205,7 +211,7 @@ export function LoginForm({
           )}
           <div className="relative hidden bg-muted md:block">
             <img
-              src="https://proxy.cdn.zostel.com/zostel/gallery/images/jGBRgUEtQsi3iFcdlY0c5A/zo-house-koramangala-20250526110719.jpg?h=720"
+              src="https://proxy.cdn.zo.xyz/gallery/media/images/a2d7b00a-3742-4f90-a844-a80606d65fab_20260523100537.webp"
               alt="Image"
               className="absolute inset-0 h-full w-full object-cover"
             />
