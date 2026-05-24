@@ -1,7 +1,27 @@
 dist/
+build/
+out/
 node_modules/
 .next/
 .turbo/
+.vercel/
 coverage/
+
+bun.lock
+bun.lockb
 pnpm-lock.yaml
+package-lock.json
+yarn.lock
 .pnpm-store/
+
+# Generated
+next-env.d.ts
+*.tsbuildinfo
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+
+# Sentry
+.sentryclirc
