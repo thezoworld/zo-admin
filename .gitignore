@@ -1,4 +1,4 @@
-# dependencies
+# Dependencies
 /node_modules
 /.pnp
 .pnp.*
@@ -8,29 +8,53 @@
 !.yarn/releases
 !.yarn/versions
 
-# testing
-/coverage
-
-# next.js
+# Build output
 /.next/
 /out/
-
-# production
 /build
+/dist
+/.turbo
+/.vercel
 
-# misc
-.DS_Store
-*.pem
+# Testing
+/coverage
+*.lcov
 
-# debug
+# Env files (NEVER commit secrets)
+.env
+.env.*
+!.env.example
+!.env*.example
+
+# Logs / debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+*.log
 
-# env files
-.env*.local
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.pem
+*.swp
 
-# typescript
+# TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Sentry
+.sentryclirc
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Misc
+.cache/

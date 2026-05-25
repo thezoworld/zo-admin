@@ -1,0 +1,25 @@
+# Each line is a file pattern followed by one or more owners.
+# Owners are notified for review automatically.
+#
+# Replace the team handles below with real ones before merging.
+
+# Architecture-touching changes need lead review.
+ARCHITECTURE.md                      @zostel/frontend-leads
+CONTRIBUTING.md                      @zostel/frontend-leads
+.github/                             @zostel/frontend-leads
+lib/api/factory.ts                   @zostel/frontend-leads
+lib/auth/                            @zostel/frontend-leads
+middleware.ts                        @zostel/frontend-leads
+next.config.mjs                      @zostel/frontend-leads
+sentry.*.config.ts                   @zostel/frontend-leads
+instrumentation.ts                   @zostel/frontend-leads
+
+# Feature ownership
+features/auth/                       @zostel/auth-team
+features/authorization/              @zostel/auth-team
+features/admin/                      @zostel/admin-team
+features/crs/                        @zostel/crs-team
+features/dashboard/                  @zostel/dashboard-team
+
+# Default
+*                                    @zostel/frontend
