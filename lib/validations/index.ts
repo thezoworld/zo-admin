@@ -1,2 +1,2 @@
 export * from "./shared"
-export * from "./auth"
+export * from "@/features/auth/schemas/login.schema"
