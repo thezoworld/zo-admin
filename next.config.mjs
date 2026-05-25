@@ -5,6 +5,7 @@ const isDev = process.env.NODE_ENV !== "production"
 // Static brand / CDN / vendor origins — these don't move.
 const CDN = "https://proxy.cdn.zo.xyz"
 const STATIC_CDN = "https://static.cdn.zo.xyz"
+const ZOSTEL_CDN = "https://proxy.cdn.zostel.com"
 const RECAPTCHA = "https://www.google.com https://www.gstatic.com"
 const SENTRY = "https://*.sentry.io https://*.ingest.sentry.io"
 
@@ -65,7 +66,7 @@ function contentSecurityPolicy() {
     `default-src 'self'`,
     `script-src ${scriptSrc}`,
     `style-src 'self' 'unsafe-inline'`,
-    `img-src 'self' data: blob: ${CDN} ${STATIC_CDN}`,
+    `img-src 'self' data: blob: ${CDN} ${STATIC_CDN} ${ZOSTEL_CDN}`,
     `font-src 'self' data:`,
     `connect-src ${connectSrc}`,
     `frame-src 'self' ${RECAPTCHA}`,
@@ -105,6 +106,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "proxy.cdn.zo.xyz",
+      },
+      {
+        protocol: "https",
+        hostname: "proxy.cdn.zostel.com",
       },
     ],
   },
