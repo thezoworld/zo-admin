@@ -11,4 +11,7 @@ export const validationMessages = {
   OTP_NUMERIC: "Code must be numeric",
   OTP_INVALID: "Invalid code",
   OTP_INCORRECT: "The code you entered is incorrect",
+
+  CAPTCHA_UNAVAILABLE:
+    "Couldn't verify you're human. Refresh the page and try again.",
 } as const
