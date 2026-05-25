@@ -1,0 +1,17 @@
+{
+  "//": "Recommended extensions for this repo. VSCode prompts new clones to install these.",
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+    "ms-playwright.playwright",
+    "vitest.explorer",
+    "EditorConfig.EditorConfig",
+    "yoavbls.pretty-ts-errors",
+    "streetsidesoftware.code-spell-checker"
+  ],
+  "unwantedRecommendations": [
+    "esbenp.prettier-vscode-disabled-on-save",
+    "ms-vscode.vscode-typescript-next"
+  ]
+}
