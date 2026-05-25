@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation"
 
 import { useAuth } from "@/features/auth"
 import { useAuthorization } from "@/features/authorization"
-import { Navigation } from "@/features/dashboard"
 import { AccessDenied } from "@/features/dashboard"
 import { DashboardShellSkeleton } from "@/features/dashboard"
+import { AppShell } from "@/features/dashboard"
 
 export default function DashboardLayout({
   children,
@@ -32,10 +32,5 @@ export default function DashboardLayout({
     return <AccessDenied />
   }
 
-  return (
-    <div className="flex min-h-svh">
-      <Navigation />
-      <main className="flex-1 overflow-x-hidden">{children}</main>
-    </div>
-  )
+  return <AppShell>{children}</AppShell>
 }
