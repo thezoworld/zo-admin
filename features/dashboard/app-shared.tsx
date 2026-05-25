@@ -3,6 +3,7 @@ import {
   Briefcase,
   FileText,
   HelpCircle,
+  Home,
   Info,
   LayoutDashboard,
   LifeBuoy,
@@ -28,33 +29,32 @@ export type SidebarNavGroup = {
 
 export const navGroups: SidebarNavGroup[] = [
   {
-    items: [
-      {
-        title: "Overview",
-        path: "/overview",
-        icon: <LayoutDashboard />,
-        isActive: true,
-      },
-    ],
-  },
-  {
     label: "Front desk",
     items: [
       {
+        title: "Home",
+        path: "/dashboard/home",
+        icon: <Home />,
+      },
+      {
+        title: "Overview",
+        path: "/dashboard/overview",
+        icon: <LayoutDashboard />,
+        isActive: true,
+      },
+      {
         title: "Pending Web Check-ins",
-        path: "/pending-web-checkins",
+        path: "/dashboard/pending-web-checkins",
         icon: <Info />,
-        badge: 8,
       },
       {
         title: "Future Web Check-ins",
-        path: "/web-checkins",
+        path: "/dashboard/web-checkins",
         icon: <Briefcase />,
-        badge: 22,
       },
       {
         title: "Digital Register",
-        path: "/digital-register",
+        path: "/dashboard/digital-register",
         icon: <FileText />,
       },
     ],
