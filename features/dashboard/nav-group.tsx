@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 
@@ -91,13 +92,13 @@ export function NavGroup({ label, items }: SidebarNavGroup) {
                             asChild
                             isActive={subItem.isActive}
                           >
-                            <a href={subItem.path}>
+                            <Link href={subItem.path ?? "#"}>
                               {subItem.icon}
                               <span>{subItem.title}</span>
                               {subItem.badge !== undefined && (
                                 <Badge value={subItem.badge} />
                               )}
-                            </a>
+                            </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       ))}
@@ -111,11 +112,11 @@ export function NavGroup({ label, items }: SidebarNavGroup) {
                   tooltip={item.title}
                   className={navButtonClass}
                 >
-                  <a href={item.path}>
+                  <Link href={item.path ?? "#"}>
                     {item.icon}
                     <span>{item.title}</span>
                     {item.badge !== undefined && <Badge value={item.badge} />}
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               )}
             </SidebarMenuItem>
