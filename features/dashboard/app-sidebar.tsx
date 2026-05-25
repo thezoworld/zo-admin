@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Image from "next/image"
+import Link from "next/link"
 
 import {
   Sidebar,
@@ -44,7 +45,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" variant="inset">
       <SidebarHeader className="h-16 justify-center">
         <SidebarMenuButton asChild size="lg" className="h-12!">
-          <a href="/overview" className="flex items-center gap-3">
+          <Link href="/dashboard/home" className="flex items-center gap-3">
             <span className="relative inline-flex shrink-0">
               <Image
                 src="https://proxy.cdn.zo.xyz/gallery/media/images/0de4ce27-6ca4-4015-8a74-54cdae159712_20260523001302.png"
@@ -63,7 +64,7 @@ export function AppSidebar() {
                 Follow Your Heart
               </span>
             </div>
-          </a>
+          </Link>
         </SidebarMenuButton>
       </SidebarHeader>
 
@@ -134,14 +135,14 @@ export function AppSidebar() {
         {/* Help links */}
         <div className="flex flex-col gap-0.5 group-data-[collapsible=icon]:hidden">
           {footerNavLinks.map((item) => (
-            <a
+            <Link
               key={item.title}
-              href={item.path}
+              href={item.path ?? "#"}
               className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
             >
               <span className="[&_svg]:size-3.5">{item.icon}</span>
               {item.title}
-            </a>
+            </Link>
           ))}
         </div>
       </SidebarFooter>
