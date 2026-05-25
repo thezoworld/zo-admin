@@ -1,0 +1,11 @@
+# Block pushes that break the build. The full test+lint sweep stays in CI;
+# here we run the fastest gates that catch the most common breakages.
+
+echo "→ typecheck"
+bun run typecheck
+
+echo "→ unit tests"
+bun run test
+
+echo "→ architectural checks (hook sizes + kebab-case naming)"
+bun run check:arch
